@@ -1,58 +1,38 @@
-import { Component } from "react";
+import { useState, useEffect } from "react";
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 import WeatherService from "../../services/WeatherService";
 
-class TodayForecast extends Component {
-  state = {
-    data: [],
-    loading: true,
-    error: false,
+const TodayForecast = ({ lat, lon }) => {
+  const [data, setData] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const weatherService = new WeatherService();
+
+  useEffect(() => {
+    updateDayForecastDetails();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lat, lon]);
+
+  const onDataLoaded = (data) => {
+    setData(data);
+    setLoading(false);
   };
 
-  weatherService = new WeatherService();
-
-  componentDidMount() {
-    this.updateDayForecastDetails();
-    /*     this.updateUserCoordinates().then(() => {
-      this.updateDayForecastDetails();
-    }); */
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.lat !== this.props.lat || prevProps.lon !== this.props.lon) {
-      this.updateDayForecastDetails();
-    }
-  }
-
-  onDataLoaded = (data) => {
-    this.setState({
-      data,
-      loading: false,
-    });
+  const onError = () => {
+    setLoading(false);
+    setError(true);
   };
 
-  onError = () => {
-    this.setState({
-      loading: false,
-      error: true,
-    });
+  const updateDayForecastDetails = () => {
+    weatherService.setCoordinates(lat, lon);
+    setLoading(true);
+    setError(false);
+    weatherService.getDayForecastDetails().then(onDataLoaded).catch(onError);
   };
 
-  /*   updateUserCoordinates = () => {
-    return this.weatherService.getUserCoordinates();
-  }; */
-
-  updateDayForecastDetails = () => {
-    this.weatherService.setCoordinates(this.props.lat, this.props.lon);
-    this.setState({ loading: true, error: false });
-    this.weatherService
-      .getDayForecastDetails()
-      .then(this.onDataLoaded)
-      .catch(this.onError);
-  };
-
-  renderItems(arr) {
+  const renderItems = (arr) => {
     return arr.map((item) => {
       return (
         <div
@@ -66,39 +46,26 @@ class TodayForecast extends Component {
           <p>{item.time}</p>
           <p>{item.description} </p>
         </div>
-        /*         <div className="card" key={`${item.time}-${item.temp}-${item.icon}`}>
-          <p>{item.time}</p>
-          <img src={item.icon} alt="hourly-forecast" />
-          <p>{(item.temp - 273.15).toFixed(2)}&deg;C</p>
-        </div> */
       );
     });
-  }
+  };
 
-  render() {
-    const { data, loading, error } = this.state;
-    const items = Array.isArray(data) ? this.renderItems(data) : null;
+  const items = Array.isArray(data) ? renderItems(data) : null;
 
-    const errorMessage = error ? <ErrorMessage /> : null;
-    const spinner = loading ? <Spinner /> : null;
-    const content = !(loading || error) ? items : null;
+  const errorMessage = error ? <ErrorMessage /> : null;
+  const spinner = loading ? <Spinner /> : null;
+  const content = !(loading || error) ? items : null;
 
-    return (
-      <div className="card">
-        <h2>3 hour forecast</h2>
-        <div className="day-forecast">
-          {errorMessage}
-          {spinner}
-          {content}
-        </div>
-      </div>
-      /*       <div className="hourly-forecast">
+  return (
+    <div className="card">
+      <h2>3 hour forecast</h2>
+      <div className="day-forecast">
         {errorMessage}
         {spinner}
         {content}
-      </div> */
-    );
-  }
-}
+      </div>
+    </div>
+  );
+};
 
 export default TodayForecast;
