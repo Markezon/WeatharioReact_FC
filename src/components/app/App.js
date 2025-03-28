@@ -24,6 +24,7 @@ const App = () => {
   ///автоматически будет обновлять фон при изменении координат
   useEffect(() => {
     updateBackgroundImage();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lat, lon]);
 
   const updateUserCoordinates = () => {

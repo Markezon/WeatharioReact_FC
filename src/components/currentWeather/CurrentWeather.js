@@ -14,6 +14,7 @@ const CurrentWeather = ({ lat, lon, city, country, updateBackgroundImage }) => {
   useEffect(() => {
     updateWeatherDetails();
     updateDate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lat, lon]);
 
   const onDataLoaded = (data) => {
