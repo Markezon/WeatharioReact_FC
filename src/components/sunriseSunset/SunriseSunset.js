@@ -1,80 +1,52 @@
-import { Component } from "react";
+import { useState, useEffect } from "react";
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 import WeatherService from "../../services/WeatherService";
 
-class SunriseSunset extends Component {
-  state = {
-    /*     sRiseTime: null,
-    sSetTime: null, */
-    data: {},
-    loading: true,
-    error: false,
+const SunriseSunset = ({ lat, lon }) => {
+  const [data, setData] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const weatherService = new WeatherService();
+
+  useEffect(() => {
+    updateSunRiseSetDetails();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lat, lon]);
+
+  const onDataLoaded = (data) => {
+    setData(data);
+    setLoading(false);
   };
 
-  weatherService = new WeatherService();
-
-  componentDidMount() {
-    this.updateSunRiseSetDetails();
-    /*     this.updateUserCoordinates().then(() => {
-      this.updateSunRiseSetDetails();
-    }); */
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.lat !== this.props.lat || prevProps.lon !== this.props.lon) {
-      this.updateSunRiseSetDetails();
-    }
-
-    clearInterval(this.timerId);
-  }
-
-  onDataLoaded = (data) => {
-    this.setState({
-      data,
-      loading: false,
-    });
+  const onError = () => {
+    setLoading(false);
+    setError(true);
   };
 
-  onError = () => {
-    this.setState({
-      loading: false,
-      error: true,
-    });
+  const updateSunRiseSetDetails = () => {
+    weatherService.setCoordinates(lat, lon);
+    setLoading(true);
+    setError(false);
+    weatherService.getSunRiseSetDetails().then(onDataLoaded).catch(onError);
   };
 
-  /*   updateUserCoordinates = () => {
-    return this.weatherService.getUserCoordinates();
-  }; */
+  const errorMessage = error ? <ErrorMessage /> : null;
+  const spinner = loading ? <Spinner /> : null;
+  const content = !(loading || error) ? <View data={data} /> : null;
 
-  updateSunRiseSetDetails = () => {
-    this.weatherService.setCoordinates(this.props.lat, this.props.lon);
-    this.setState({ loading: true, error: false });
-    this.weatherService
-      .getSunRiseSetDetails()
-      .then(this.onDataLoaded)
-      .catch(this.onError);
-  };
-
-  render() {
-    const { data, loading, error } = this.state;
-
-    const errorMessage = error ? <ErrorMessage /> : null;
-    const spinner = loading ? <Spinner /> : null;
-    const content = !(loading || error) ? <View data={data} /> : null;
-
-    return (
-      <div className="card">
-        <div className="card-head">
-          <p>Sunrise & Sunset</p>
-        </div>
-        {errorMessage}
-        {spinner}
-        {content}
+  return (
+    <div className="card">
+      <div className="card-head">
+        <p>Sunrise & Sunset</p>
       </div>
-    );
-  }
-}
+      {errorMessage}
+      {spinner}
+      {content}
+    </div>
+  );
+};
 
 const View = ({ data }) => {
   const { sRiseTime, sSetTime } = data;
