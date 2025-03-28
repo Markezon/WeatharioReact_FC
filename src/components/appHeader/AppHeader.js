@@ -1,101 +1,92 @@
-import { Component, createRef } from "react";
+import { useState, useRef } from "react";
 import WeatherService from "../../services/WeatherService";
 
-class AppHeader extends Component {
-  constructor(props) {
-    super(props);
-    this.cityInput = createRef();
-    this.state = {
-      suggestions: [],
-    };
-    this.weatherService = new WeatherService();
-  }
+const AppHeader = ({ onSearch, updateUserCoordinates }) => {
+  const cityInput = useRef(null);
+  const [suggestions, setSuggestions] = useState([]);
+  const weatherService = new WeatherService();
 
-  handleCurrentLocation = () => {
-    this.props.updateUserCoordinates();
+  const handleCurrentLocation = () => {
+    updateUserCoordinates();
   };
 
-  handleSearch = (cityName) => {
-    this.props.onSearch(cityName);
-    this.setState({ suggestions: [] });
-    this.cityInput.current.value = "";
-  };
-
-  handleKeyDown = (event) => {
-    if (event.key === "Enter") {
-      this.handleSearch(this.cityInput.current.value.trim());
+  const handleSearch = (cityName) => {
+    onSearch(cityName);
+    setSuggestions([]);
+    if (cityInput.current) {
+      cityInput.current.value = "";
     }
   };
 
-  handleInputChange = async (event) => {
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      handleSearch(cityInput.current.value.trim());
+    }
+  };
+
+  const handleInputChange = async (event) => {
     const query = event.target.value;
     if (query.length < 2) {
-      this.setState({ suggestions: [] });
+      setSuggestions([]);
       return;
     }
 
     try {
-      const suggestions = await this.weatherService.getCitySuggestions(query);
-      this.setState({ suggestions });
+      const fetchedSuggestions = await weatherService.getCitySuggestions(query);
+      setSuggestions(fetchedSuggestions);
     } catch (error) {
       console.error("Error fetching city suggestions:", error);
-      this.setState({ suggestions: [] });
+      setSuggestions((suggestions) => {
+        setSuggestions([]);
+      });
     }
   };
 
-  render() {
-    return (
-      <header className="header">
-        <div className="header_wrapper">
-          <img
-            src={`${process.env.PUBLIC_URL}/WeatharioLogo.svg`}
-            alt="Logo"
-            className="header_logo"
-          />
+  return (
+    <header className="header">
+      <div className="header_wrapper">
+        <img
+          src={`${process.env.PUBLIC_URL}/WeatharioLogo.svg`}
+          alt="Logo"
+          className="header_logo"
+        />
 
-          <h2>Weathario</h2>
-        </div>
+        <h2>Weathario</h2>
+      </div>
 
-        <div className="wheather-input">
-          <input
-            type="text"
-            ref={this.cityInput}
-            name="city"
-            id="city_input"
-            placeholder="Enter city name"
-            onChange={this.handleInputChange}
-            onKeyDown={this.handleKeyDown}
-          />
-          <button
-            type="button"
-            id="searchBtn"
-            onClick={() =>
-              this.handleSearch(this.cityInput.current.value.trim())
-            }
-          >
-            <i className="fa-regular fa-search"></i> Search
-          </button>
-          <button
-            type="button"
-            id="locationBtn"
-            onClick={this.handleCurrentLocation}
-          >
-            <i className="bx bx-target-lock"></i> Current Location
-          </button>
+      <div className="wheather-input">
+        <input
+          type="text"
+          ref={cityInput}
+          name="city"
+          id="city_input"
+          placeholder="Enter city name"
+          onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
+        />
+        <button
+          type="button"
+          id="searchBtn"
+          onClick={() => handleSearch(cityInput.current.value.trim())}
+        >
+          <i className="fa-regular fa-search"></i> Search
+        </button>
+        <button type="button" id="locationBtn" onClick={handleCurrentLocation}>
+          <i className="bx bx-target-lock"></i> Current Location
+        </button>
 
-          {this.state.suggestions.length > 0 && (
-            <ul className="suggestions">
-              {this.state.suggestions.map((city, index) => (
-                <li key={index} onClick={() => this.handleSearch(city.name)}>
-                  {city.name}, {city.country}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </header>
-    );
-  }
-}
+        {suggestions.length > 0 && (
+          <ul className="suggestions">
+            {suggestions.map((city, index) => (
+              <li key={index} onClick={() => handleSearch(city.name)}>
+                {city.name}, {city.country}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </header>
+  );
+};
 
 export default AppHeader;
