@@ -1,131 +1,67 @@
-import { Component } from "react";
+import { useState, useEffect } from "react";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 import Spinner from "../spinner/Spinner";
 import WeatherService from "../../services/WeatherService";
 
-class CurrentWeather extends Component {
-  state = {
-    data: {},
-    loading: true,
-    error: false,
+const CurrentWeather = ({ lat, lon, city, country, updateBackgroundImage }) => {
+  const [data, setData] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [date, setDate] = useState({});
+
+  const weatherService = new WeatherService();
+
+  useEffect(() => {
+    updateWeatherDetails();
+    updateDate();
+  }, [lat, lon]);
+
+  const onDataLoaded = (data) => {
+    setData(data);
+    setLoading(false);
   };
 
-  weatherService = new WeatherService();
-
-  componentDidMount() {
-    this.updateWeatherDetails();
-    this.updateDate();
-
-    /*     this.updateUserCoordinates().then(() => {
-      this.updateWeatherDetails();
-      this.updateDate();
-    }); */
-    /*     this.timerId = setInterval(this.updateAirDetails, 10 * 60 * 1000); */
-  }
-
-  componentDidUpdate(prevProps) {
-    if (
-      prevProps.lat !== this.props.lat ||
-      prevProps.lon !== this.props.lon /* ||
-      prevProps.weatherBackImage !== this.props.weatherBackImage */
-    ) {
-      this.updateWeatherDetails();
-    }
-
-    /*     this.updateNameCountry(); */
-  }
-
-  updateNameCountry = () => {
-    this.setState({
-      city: this.props.city,
-      country: this.props.country,
-    });
+  const onError = () => {
+    setLoading(false);
+    setError(true);
   };
 
-  onDataLoaded = (data) => {
-    this.setState({
-      data,
-      loading: false,
-    });
-  };
-
-  onError = () => {
-    this.setState({
-      loading: false,
-      error: true,
-    });
-  };
-
-  updateWeatherDetails = () => {
-    this.weatherService.setCoordinates(this.props.lat, this.props.lon);
-    this.setState({ loading: true, error: false });
-    this.weatherService
+  const updateWeatherDetails = () => {
+    weatherService.setCoordinates(lat, lon);
+    setLoading(true);
+    setError(false);
+    weatherService
       .getWeatherDetails()
       .then((res) => {
-        this.onDataLoaded(res);
-        this.props.updateBackgroundImage();
+        onDataLoaded(res);
+        updateBackgroundImage();
       })
-      /*       .then(this.onDataLoaded) */
-      .catch(this.onError);
+
+      .catch(onError);
   };
 
-  updateDate = () => {
-    this.weatherService.getDate().then((res) => {
-      this.setState({
-        dayNumber: res.dayNumber,
-        day: res.day,
-        month: res.month,
-        year: res.year,
-      });
-    });
+  const updateDate = () => {
+    weatherService.getDate().then(setDate);
   };
 
-  /*   updateUserCoordinates = () => {
-    return this.weatherService.getUserCoordinates().then((res) => {
-      this.setState({
-        city: res.city,
-        country: res.country,
-      });
-    });
-  }; */
+  const errorMessage = error ? <ErrorMessage /> : null;
+  const spinner = loading ? <Spinner /> : null;
+  const content = !(loading || error) ? (
+    <View data={data} date={date} city={city} country={country} />
+  ) : null;
 
-  render() {
-    const {
-      data,
-      loading,
-      error,
-      dayNumber,
-      day,
-      month,
-      year /* , city, country  */,
-    } = this.state;
-    const { city, country } = this.props;
-    const errorMessage = error ? <ErrorMessage /> : null;
-    const spinner = loading ? <Spinner /> : null;
-    const content = !(loading || error) ? (
-      <View
-        data={data}
-        dayNumber={dayNumber}
-        day={day}
-        month={month}
-        year={year}
-        city={city}
-        country={country}
-      />
-    ) : null;
+  return (
+    <div className="card">
+      {errorMessage}
+      {spinner}
+      {content}
+    </div>
+  );
+};
 
-    return (
-      <div className="card">
-        {errorMessage}
-        {spinner}
-        {content}
-      </div>
-    );
-  }
-}
-
-const View = ({ data, dayNumber, day, month, year, city, country }) => {
+const View = ({ data, date, city, country }) => {
   const { temp, description, icon, feels_like, weatherImg } = data;
+  const { dayNumber, day, month, year } = date;
   return (
     <>
       <div className="current-weather">
