@@ -1,76 +1,49 @@
-import { Component } from "react";
+import { useState, useEffect } from "react";
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 import WeatherService from "../../services/WeatherService";
 
-class WeatherDetails extends Component {
-  state = {
-    data: {},
-    loading: true,
-    error: false,
+const WeatherDetails = ({ lat, lon }) => {
+  const [data, setData] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const weatherService = new WeatherService();
+
+  useEffect(() => {
+    updateWeatherDetails();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lat, lon]);
+
+  const onDataLoaded = (data) => {
+    setData(data);
+    setLoading(false);
   };
 
-  weatherService = new WeatherService();
-
-  componentDidMount() {
-    this.updateWeatherDetails();
-    /*     this.updateUserCoordinates().then(() => {
-      this.updateWeatherDetails();
-    }); */
-
-    /*     this.timerId = setInterval(this.updateAirDetails, 10 * 60 * 1000); */
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.lat !== this.props.lat || prevProps.lon !== this.props.lon) {
-      this.updateWeatherDetails();
-    }
-    clearInterval(this.timerId);
-  }
-
-  onDataLoaded = (data) => {
-    this.setState({
-      data,
-      loading: false,
-    });
+  const onError = () => {
+    setLoading(false);
+    setError(true);
   };
 
-  onError = () => {
-    this.setState({
-      loading: false,
-      error: true,
-    });
+  const updateWeatherDetails = () => {
+    weatherService.setCoordinates(lat, lon);
+    setLoading(true);
+    setError(false);
+    weatherService.getWeatherDetails().then(onDataLoaded).catch(onError);
   };
 
-  /*   updateUserCoordinates = () => {
-    return this.weatherService.getUserCoordinates();
-  }; */
+  const errorMessage = error ? <ErrorMessage /> : null;
+  const spinner = loading ? <Spinner /> : null;
+  const content = !(loading || error) ? <View data={data} /> : null;
 
-  updateWeatherDetails = () => {
-    this.weatherService.setCoordinates(this.props.lat, this.props.lon);
-    this.setState({ loading: true, error: false });
-    this.weatherService
-      .getWeatherDetails()
-      .then(this.onDataLoaded)
-      .catch(this.onError);
-  };
-
-  render() {
-    const { data, loading, error } = this.state;
-
-    const errorMessage = error ? <ErrorMessage /> : null;
-    const spinner = loading ? <Spinner /> : null;
-    const content = !(loading || error) ? <View data={data} /> : null;
-
-    return (
-      <div className="card">
-        {errorMessage}
-        {spinner}
-        {content}
-      </div>
-    );
-  }
-}
+  return (
+    <div className="card">
+      {errorMessage}
+      {spinner}
+      {content}
+    </div>
+  );
+};
 
 const View = ({ data }) => {
   const { humidity, pressure, feels_like, windSpeed, visibility } = data;
