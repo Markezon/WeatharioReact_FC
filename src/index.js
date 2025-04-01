@@ -1,13 +1,13 @@
 import { createRoot } from "react-dom/client";
 import App from "./components/app/App";
 
-import WeatherService from "./services/WeatherService";
+/* import WeatherService from "./services/WeatherService"; */
 
 import "./style/style.scss";
 
-console.log(navigator.geolocation.getCurrentPosition);
+/* console.log(navigator.geolocation.getCurrentPosition); */
 
-const weatherService = new WeatherService();
+/* const weatherService = new WeatherService(); */
 
 /* weatherService
   .getWeatherAirDetails()
