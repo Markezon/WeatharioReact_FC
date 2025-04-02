@@ -4,7 +4,9 @@ import WeatherService from "../../services/WeatherService";
 const AppHeader = ({ onSearch, updateUserCoordinates }) => {
   const cityInput = useRef(null);
   const [suggestions, setSuggestions] = useState([]);
-  const weatherService = new WeatherService();
+  const {
+    getCitySuggestions,
+  } = WeatherService();
 
   const handleCurrentLocation = () => {
     updateUserCoordinates();
@@ -32,7 +34,7 @@ const AppHeader = ({ onSearch, updateUserCoordinates }) => {
     }
 
     try {
-      const fetchedSuggestions = await weatherService.getCitySuggestions(query);
+      const fetchedSuggestions = await getCitySuggestions(query);
       setSuggestions(fetchedSuggestions);
     } catch (error) {
       console.error("Error fetching city suggestions:", error);

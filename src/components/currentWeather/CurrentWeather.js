@@ -9,7 +9,7 @@ const CurrentWeather = ({ lat, lon, city, country, updateBackgroundImage }) => {
   const [error, setError] = useState(false);
   const [date, setDate] = useState({});
 
-  const weatherService = new WeatherService();
+  const { setCoordinates, getDate, getWeatherDetails } = WeatherService();
 
   useEffect(() => {
     updateWeatherDetails();
@@ -28,11 +28,10 @@ const CurrentWeather = ({ lat, lon, city, country, updateBackgroundImage }) => {
   };
 
   const updateWeatherDetails = () => {
-    weatherService.setCoordinates(lat, lon);
+    setCoordinates(lat, lon);
     setLoading(true);
     setError(false);
-    weatherService
-      .getWeatherDetails()
+    getWeatherDetails()
       .then((res) => {
         onDataLoaded(res);
         updateBackgroundImage();
@@ -42,7 +41,7 @@ const CurrentWeather = ({ lat, lon, city, country, updateBackgroundImage }) => {
   };
 
   const updateDate = () => {
-    weatherService.getDate().then(setDate);
+    getDate().then(setDate);
   };
 
   const errorMessage = error ? <ErrorMessage /> : null;

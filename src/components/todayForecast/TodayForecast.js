@@ -8,7 +8,7 @@ const TodayForecast = ({ lat, lon }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  const weatherService = new WeatherService();
+  const { setCoordinates, getDayForecastDetails } = WeatherService();
 
   useEffect(() => {
     updateDayForecastDetails();
@@ -26,10 +26,10 @@ const TodayForecast = ({ lat, lon }) => {
   };
 
   const updateDayForecastDetails = () => {
-    weatherService.setCoordinates(lat, lon);
+    setCoordinates(lat, lon);
     setLoading(true);
     setError(false);
-    weatherService.getDayForecastDetails().then(onDataLoaded).catch(onError);
+    getDayForecastDetails().then(onDataLoaded).catch(onError);
   };
 
   const renderItems = (arr) => {

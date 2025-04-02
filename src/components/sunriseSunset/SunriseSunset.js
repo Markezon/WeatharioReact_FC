@@ -8,7 +8,7 @@ const SunriseSunset = ({ lat, lon }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  const weatherService = new WeatherService();
+  const { setCoordinates, getSunRiseSetDetails } = WeatherService();
 
   useEffect(() => {
     updateSunRiseSetDetails();
@@ -26,10 +26,10 @@ const SunriseSunset = ({ lat, lon }) => {
   };
 
   const updateSunRiseSetDetails = () => {
-    weatherService.setCoordinates(lat, lon);
+    setCoordinates(lat, lon);
     setLoading(true);
     setError(false);
-    weatherService.getSunRiseSetDetails().then(onDataLoaded).catch(onError);
+    getSunRiseSetDetails().then(onDataLoaded).catch(onError);
   };
 
   const errorMessage = error ? <ErrorMessage /> : null;

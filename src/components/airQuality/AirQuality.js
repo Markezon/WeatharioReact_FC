@@ -8,7 +8,7 @@ const AirQuality = ({ lat, lon }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  const weatherService = new WeatherService();
+  const { setCoordinates, getWeatherAirDetails } = WeatherService();
 
   useEffect(() => {
     updateAirDetails();
@@ -26,10 +26,10 @@ const AirQuality = ({ lat, lon }) => {
   };
 
   const updateAirDetails = () => {
-    weatherService.setCoordinates(lat, lon);
+    setCoordinates(lat, lon);
     setLoading(true);
     setError(false);
-    weatherService.getWeatherAirDetails().then(onDataLoaded).catch(onError);
+    getWeatherAirDetails().then(onDataLoaded).catch(onError);
   };
 
   const errorMessage = error ? <ErrorMessage /> : null;

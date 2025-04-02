@@ -8,7 +8,12 @@ import Forecast from "../forecast/Forecast";
 import WeatherDetails from "../weatherDetails/WeatherDetails";
 import TodayForecast from "../todayForecast/TodayForecast";
 
-const weatherService = new WeatherService();
+const {
+  setCoordinates,
+  getWeatherDetails,
+  getCityCoordinates,
+  getUserCoordinates,
+} = WeatherService();
 
 const App = () => {
   const [lat, setLat] = useState(55.7504461);
@@ -28,7 +33,7 @@ const App = () => {
   }, [lat, lon]);
 
   const updateUserCoordinates = () => {
-    weatherService.getUserCoordinates().then((res) => {
+    getUserCoordinates().then((res) => {
       setLat((lat) => res.lat);
       setLon((lon) => res.lon);
       setCountry((country) => res.country);
@@ -37,14 +42,14 @@ const App = () => {
   };
 
   const updateBackgroundImage = () => {
-    weatherService.setCoordinates(lat, lon);
-    weatherService.getWeatherDetails().then((res) => {
+    setCoordinates(lat, lon);
+    getWeatherDetails().then((res) => {
       setWeatherBackImage((weatherBackImage) => res.weatherBackImage);
     });
   };
 
   const onSearch = (cityName) => {
-    weatherService.getCityCoordinates(cityName).then((res) => {
+    getCityCoordinates(cityName).then((res) => {
       setLat((lat) => res.lat);
       setLon((lon) => res.lon);
       setCountry((country) => res.country);

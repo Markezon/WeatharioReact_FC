@@ -1,17 +1,18 @@
-class WeatherService {
-  _apiBase = "https://api.openweathermap.org/";
+/* import { useHttp } from "../hooks/http.hook"; */
+const WeatherService = () => {
+  const _apiBase = "https://api.openweathermap.org/";
 
-  _apiKey = "d57e7dd67678ae3df53bfb464eebf81a";
+  const _apiKey = "d57e7dd67678ae3df53bfb464eebf81a";
 
-  /*   lat = "55.7504461";
-  lon = "37.6174943"; */
+  let lat = "55.7504461";
+  let lon = "37.6174943";
 
-  setCoordinates(latitude, longitude) {
-    this.lat = latitude;
-    this.lon = longitude;
-  }
+  const setCoordinates = (latitude, longitude) => {
+    lat = latitude;
+    lon = longitude;
+  };
 
-  getDate = async () => {
+  const getDate = async () => {
     let date = new Date();
     let days = [
       "Sunday",
@@ -45,7 +46,7 @@ class WeatherService {
     };
   };
 
-  getResource = async (url) => {
+  const getResource = async (url) => {
     let res = await fetch(url);
 
     if (!res.ok) {
@@ -57,20 +58,14 @@ class WeatherService {
 
   //AirQuaility
 
-  /*   getWeatherAirDetails22 = async () => {
-    return this.getResource(
-      `${this._apiBase}data/2.5/air_pollution?lat=${this.lat}&lon=${this.lon}&appid=${this._apiKey}`
+  const getWeatherAirDetails = async () => {
+    const res = await getResource(
+      `${_apiBase}data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${_apiKey}`
     );
-  }; */
-
-  getWeatherAirDetails = async () => {
-    const res = await this.getResource(
-      `${this._apiBase}data/2.5/air_pollution?lat=${this.lat}&lon=${this.lon}&appid=${this._apiKey}`
-    );
-    return this._transformAirDetails(res.list[0]);
+    return _transformAirDetails(res.list[0]);
   };
 
-  _transformAirDetails = (data) => {
+  const _transformAirDetails = (data) => {
     return {
       co: data.components.co,
       no: data.components.no,
@@ -84,23 +79,17 @@ class WeatherService {
     };
   };
 
-  /*   getWeatherDetails = async () => {
-    return this.getResource(
-      `${this._apiBase}data/2.5/weather?lat=${this.lat}&lon=${this.lon}&appid=${this._apiKey}`
-    );
-  }; */
-
   //CurrentWeather
 
-  getWeatherDetails = async () => {
-    const res = await this.getResource(
-      `${this._apiBase}data/2.5/weather?lat=${this.lat}&lon=${this.lon}&appid=${this._apiKey}`
+  const getWeatherDetails = async () => {
+    const res = await getResource(
+      `${_apiBase}data/2.5/weather?lat=${lat}&lon=${lon}&appid=${_apiKey}`
     );
-/*     console.log(this._transformWeatherDetails(res)); */
-    return this._transformWeatherDetails(res);
+
+    return _transformWeatherDetails(res);
   };
 
-  _transformWeatherDetails = (res) => {
+  const _transformWeatherDetails = (res) => {
     let currentWeatherImg = "";
     let backgroundImage = "";
     switch (res.weather[0].icon) {
@@ -167,14 +156,14 @@ class WeatherService {
 
   //SunRise SunSet
 
-  getSunRiseSetDetails = async () => {
-    const res = await this.getResource(
-      `${this._apiBase}data/2.5/weather?lat=${this.lat}&lon=${this.lon}&appid=${this._apiKey}`
+  const getSunRiseSetDetails = async () => {
+    const res = await getResource(
+      `${_apiBase}data/2.5/weather?lat=${lat}&lon=${lon}&appid=${_apiKey}`
     );
-    return this._transformSunRiseSetDetails(res);
+    return _transformSunRiseSetDetails(res);
   };
 
-  _transformSunRiseSetDetails = (res) => {
+  const _transformSunRiseSetDetails = (res) => {
     const options = { hour: "2-digit", minute: "2-digit", timeZone: "UTC" };
     return {
       sRiseTime: new Intl.DateTimeFormat("en-US", options).format(
@@ -186,46 +175,22 @@ class WeatherService {
     };
   };
 
-  /*   _transformSunRiseSetDetails = (res) => {
-    return {
-      sRiseTime: new Date(res.sys.sunrise * 1000).toLocaleString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-      sSetTime: new Date(res.sys.sunset * 1000).toLocaleString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-    };
-  }; */
-
   //DayForecast
-  /* `${this._apiBase}data/2.5/forecast/daily?lat=${this.lat}&lon=${this.lon}&cnt=${this.cnt}&appid=${this._apiKey}` */
-  /* `${this._apiBase}data/2.5/forecast?lat=${this.lat}&lon=${this.lon}&appid=${this._apiKey}` */
-  /////////////////////////
-  /*   getDayForecastDetails = async () => {
-    return this.getResource(
-      `${this._apiBase}data/2.5/forecast?lat=${this.lat}&lon=${this.lon}&appid=${this._apiKey}`
-    );
-  }; */
-  /////////////////////////
-  getDayForecastDetails = async (param) => {
-    const res = await this.getResource(
-      `${this._apiBase}data/2.5/forecast?lat=${this.lat}&lon=${this.lon}&appid=${this._apiKey}`
+
+  const getDayForecastDetails = async (param) => {
+    const res = await getResource(
+      `${_apiBase}data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${_apiKey}`
     );
     if (param) {
-      return this._transformDayForecastDetails(res);
-    } else return this._transformTodayDetails(res);
+      return _transformDayForecastDetails(res);
+    } else return _transformTodayDetails(res);
   };
 
-  _transformTodayDetails = (res) => {
-    /*     const today = new Date().toISOString().split("T")[0]; */
-
+  const _transformTodayDetails = (res) => {
     const data = res.list
       .slice(0, 8)
-      /*       .filter((item) => item.dt_txt.startsWith(today)) */
+
       .map((item) => ({
-        /*         dayNumber: new Date(item.dt_txt).getDate(), */
         time: item.dt_txt.split(" ")[1].slice(0, 5),
         temp: item.main.temp,
         icon: `https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`,
@@ -233,11 +198,10 @@ class WeatherService {
         description2: item.weather[0].main,
       }));
 
-/*     console.log(data); */
     return data;
   };
 
-  _transformDayForecastDetails = (res) => {
+  const _transformDayForecastDetails = (res) => {
     const today = new Date().getDate();
 
     const data = res.list.map((item) => ({
@@ -272,27 +236,14 @@ class WeatherService {
 
   //CityCoordinates
 
-  /*   getCityCoordinates = async (cityName) => {
-    return this.getResource(
-      `${this._apiBase}geo/1.0/direct?q=${cityName}&limit=1&appid=${this._apiKey}`
+  const getCityCoordinates = async (cityName) => {
+    const data = await getResource(
+      `${_apiBase}geo/1.0/direct?q=${cityName}&limit=1&appid=${_apiKey}`
     );
-
-  }; */
-
-  /*   getCityCoordinates = async (cityName) => {
-    return this.getResource(
-      `${this._apiBase}geo/1.0/direct?q=${cityName}&limit=1&appid=${this._apiKey}`
-    );
-  }; */
-
-  getCityCoordinates = async (cityName) => {
-    const data = await this.getResource(
-      `${this._apiBase}geo/1.0/direct?q=${cityName}&limit=1&appid=${this._apiKey}`
-    );
-    return this._transformGetCityCoordinates(data);
+    return _transformGetCityCoordinates(data);
   };
 
-  _transformGetCityCoordinates = (data) => {
+  const _transformGetCityCoordinates = (data) => {
     return {
       country: data[0].country,
       lat: data[0].lat,
@@ -301,71 +252,20 @@ class WeatherService {
     };
   };
 
-  /*   function getCityCoordinates() {
-    let cityName = cityInput.value.trim();
-    cityInput.value = "";
-    if (!cityInput) return;
-    let GEOCODING_API_URL = `http://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=1&appid=${api_key}`;
-    fetch(GEOCODING_API_URL)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data[0]);
-        let { name, lat, lon, country, state } = data[0];
-        getWeatherDetails(name, lat, lon, country, state);
-      })
-      .catch(() => {
-        alert(`Failed to fetch coordinates of ${cityName}`);
-      });
-  } */
-
-  /*   _transformGetCityCoordinates = (data) => {
-    return this.setCoordinates(data[0].lat, data[0].lon);
-  }; */
-
   //UserLocation
-  /*   getUserCoordinates = async () => {
-    const { latitude, longitude } =
-      navigator.geolocation.getCurrentPosition.position.coords;
 
-    const res = await this.getResource(
-      `${this._apiBase}geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=${this._apiKey}`
-    );
-    return this._transformWeatherDetails(res);
-  }; */
-
-  /*   getUserCoordinates = async () => {
-    return new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const { latitude, longitude } = position.coords;
-
-          try {
-            const data = await this.getResource(
-              `${this._apiBase}geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=${this._apiKey}`
-            );
-            resolve(data);
-          } catch (error) {
-            reject(error);
-          }
-        },
-        (error) => reject(error),
-        { enableHighAccuracy: true }
-      );
-    });
-  }; */
-
-  getUserCoordinates = async () => {
+  const getUserCoordinates = async () => {
     return new Promise((resolve, reject) => {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           async (position) => {
             const { latitude, longitude } = position.coords;
-            this.setCoordinates(latitude, longitude); // Обновляем координаты
+            setCoordinates(latitude, longitude); // Обновляем координаты
 
-            const res = await this.getResource(
-              `${this._apiBase}geo/1.0/reverse?lat=${this.lat}&lon=${this.lon}&limit=1&appid=${this._apiKey}`
+            const res = await getResource(
+              `${_apiBase}geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${_apiKey}`
             );
-            resolve(this._transformGetUserCoordinates(res));
+            resolve(_transformGetUserCoordinates(res));
           },
           (error) => reject(error),
           { enableHighAccuracy: true }
@@ -376,7 +276,7 @@ class WeatherService {
     });
   };
 
-  _transformGetUserCoordinates = (data) => {
+  const _transformGetUserCoordinates = (data) => {
     return {
       city: data[0].name,
       country: data[0].country,
@@ -387,11 +287,11 @@ class WeatherService {
 
   //CitySuggestions
 
-  getCitySuggestions = async (query) => {
+  const getCitySuggestions = async (query) => {
     if (!query.trim()) return [];
 
-    const data = await this.getResource(
-      `${this._apiBase}geo/1.0/direct?q=${query}&limit=5&appid=${this._apiKey}`
+    const data = await getResource(
+      `${_apiBase}geo/1.0/direct?q=${query}&limit=5&appid=${_apiKey}`
     );
 
     return data.map((city) => ({
@@ -401,6 +301,19 @@ class WeatherService {
       lon: city.lon,
     }));
   };
-}
+
+  return {
+    setCoordinates,
+    getDate,
+    getResource,
+    getWeatherAirDetails,
+    getWeatherDetails,
+    getSunRiseSetDetails,
+    getDayForecastDetails,
+    getCityCoordinates,
+    getUserCoordinates,
+    getCitySuggestions,
+  };
+};
 
 export default WeatherService;
