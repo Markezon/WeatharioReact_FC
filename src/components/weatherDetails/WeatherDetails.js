@@ -1,36 +1,14 @@
-import { useState, useEffect } from "react";
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 import useWeatherService from "../../services/WeatherService";
+import useWeatherData from "../../hooks/useWeatherData";
 
 const WeatherDetails = ({ lat, lon }) => {
-  const [data, setData] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const { data } = useWeatherData(lat, lon, (service) =>
+    service.getWeatherDetails()
+  );
 
-  const { setCoordinates, getWeatherDetails } = useWeatherService();
-
-  useEffect(() => {
-    updateWeatherDetails();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lat, lon]);
-
-  const onDataLoaded = (data) => {
-    setData(data);
-    setLoading(false);
-  };
-
-  const onError = () => {
-    setLoading(false);
-    setError(true);
-  };
-
-  const updateWeatherDetails = () => {
-    setCoordinates(lat, lon);
-    setLoading(true);
-    setError(false);
-    getWeatherDetails().then(onDataLoaded).catch(onError);
-  };
+  const { loading, error } = useWeatherService();
 
   const errorMessage = error ? <ErrorMessage /> : null;
   const spinner = loading ? <Spinner /> : null;

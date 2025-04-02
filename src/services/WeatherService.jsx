@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useHttp } from "../hooks/http.hook";
 
 const useWeatherService = () => {
@@ -7,8 +8,8 @@ const useWeatherService = () => {
 
   const _apiKey = "d57e7dd67678ae3df53bfb464eebf81a";
 
-  let lat = "55.7504461";
-  let lon = "37.6174943";
+  let lat = "";
+  let lon = "";
 
   const setCoordinates = (latitude, longitude) => {
     lat = latitude;

@@ -4,12 +4,16 @@ import Spinner from "../spinner/Spinner";
 import useWeatherService from "../../services/WeatherService";
 
 const CurrentWeather = ({ lat, lon, city, country, updateBackgroundImage }) => {
+
+
+
+
+  
   const [data, setData] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
   const [date, setDate] = useState({});
 
-  const { setCoordinates, getDate, getWeatherDetails } = useWeatherService();
+  const { loading, error, setCoordinates, getDate, getWeatherDetails } =
+    useWeatherService();
 
   useEffect(() => {
     updateWeatherDetails();
@@ -19,25 +23,14 @@ const CurrentWeather = ({ lat, lon, city, country, updateBackgroundImage }) => {
 
   const onDataLoaded = (data) => {
     setData(data);
-    setLoading(false);
-  };
-
-  const onError = () => {
-    setLoading(false);
-    setError(true);
   };
 
   const updateWeatherDetails = () => {
     setCoordinates(lat, lon);
-    setLoading(true);
-    setError(false);
-    getWeatherDetails()
-      .then((res) => {
-        onDataLoaded(res);
-        updateBackgroundImage();
-      })
-
-      .catch(onError);
+    getWeatherDetails().then((res) => {
+      onDataLoaded(res);
+      updateBackgroundImage();
+    });
   };
 
   const updateDate = () => {
