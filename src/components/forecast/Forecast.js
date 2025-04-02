@@ -11,12 +11,9 @@ const Forecast = ({ lat, lon }) => {
   const { loading, error } = useWeatherService();
 
   const renderItems = (arr) => {
-    return arr.map((item) => {
+    return arr.map((item, index) => {
       return (
-        <div
-          className="card"
-          key={`${item.dayNumber}-${item.month}-${item.day}`}
-        >
+        <div className="card" key={`${index}`}>
           <p>{item.day}</p>
           <p>
             {item.dayNumber} {item.month}

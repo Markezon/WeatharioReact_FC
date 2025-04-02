@@ -11,12 +11,9 @@ const TodayForecast = ({ lat, lon }) => {
   const { loading, error } = useWeatherService();
 
   const renderItems = (arr) => {
-    return arr.map((item) => {
+    return arr.map((item, index) => {
       return (
-        <div
-          className="forecast-item"
-          key={`${item.time}-${item.temp}-${item.icon}`}
-        >
+        <div className="forecast-item" key={`${index}`}>
           <div className="icon-wrapper">
             <img src={item.icon} alt="forecast_img" />
             <span>{(item.temp - 273.15).toFixed(2)}&deg;C</span>

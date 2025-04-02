@@ -1,41 +1,14 @@
-import { useState, useEffect } from "react";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 import Spinner from "../spinner/Spinner";
 import useWeatherService from "../../services/WeatherService";
+import useWeatherData from "../../hooks/useWeatherData";
 
 const CurrentWeather = ({ lat, lon, city, country, updateBackgroundImage }) => {
+  const { data, date } = useWeatherData(lat, lon, (service) =>
+    service.getWeatherDetails()
+  );
 
-
-
-
-  
-  const [data, setData] = useState({});
-  const [date, setDate] = useState({});
-
-  const { loading, error, setCoordinates, getDate, getWeatherDetails } =
-    useWeatherService();
-
-  useEffect(() => {
-    updateWeatherDetails();
-    updateDate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lat, lon]);
-
-  const onDataLoaded = (data) => {
-    setData(data);
-  };
-
-  const updateWeatherDetails = () => {
-    setCoordinates(lat, lon);
-    getWeatherDetails().then((res) => {
-      onDataLoaded(res);
-      updateBackgroundImage();
-    });
-  };
-
-  const updateDate = () => {
-    getDate().then(setDate);
-  };
+  const { loading, error } = useWeatherService();
 
   const errorMessage = error ? <ErrorMessage /> : null;
   const spinner = loading ? <Spinner /> : null;
@@ -71,8 +44,8 @@ const View = ({ data, date, city, country }) => {
       <hr />
       <div className="card-footer">
         <p>
-          <i className="fa-light fa-calendar"></i> {day}, {weatherImg}{" "}
-          {dayNumber} {month}, {year}
+          <i className="fa-light fa-calendar"></i> {day}, {dayNumber} {month},{" "}
+          {year}
         </p>
         <p>
           <i className="fa-light fa-location-dot"></i> {city}, {country}

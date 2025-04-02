@@ -3,11 +3,14 @@ import useWeatherService from "../services/WeatherService";
 
 const useWeatherData = (lat, lon, fetchDataFn) => {
   const [data, setData] = useState({});
-  const {setCoordinates, ...service } = useWeatherService();
+  const [date, setDate] = useState({});
+
+  const { setCoordinates, getDate, ...service } = useWeatherService();
 
   useEffect(() => {
     if (lat && lon) {
       updateData();
+      updateDate();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lat, lon]);
@@ -17,7 +20,11 @@ const useWeatherData = (lat, lon, fetchDataFn) => {
     fetchDataFn(service).then(setData);
   };
 
-  return { data };
+  const updateDate = () => {
+    getDate().then(setDate);
+  };
+
+  return { data, date };
 };
 
 export default useWeatherData;
