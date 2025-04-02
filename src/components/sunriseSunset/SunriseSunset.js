@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
-import WeatherService from "../../services/WeatherService";
+import useWeatherService from "../../services/WeatherService";
 
 const SunriseSunset = ({ lat, lon }) => {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  const { setCoordinates, getSunRiseSetDetails } = WeatherService();
+  const { setCoordinates, getSunRiseSetDetails } = useWeatherService();
 
   useEffect(() => {
     updateSunRiseSetDetails();

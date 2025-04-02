@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import WeatherService from "../../services/WeatherService";
+import useWeatherService from "../../services/WeatherService";
 import AppHeader from "../appHeader/AppHeader";
 import AirQuality from "../airQuality/AirQuality";
 import CurrentWeather from "../currentWeather/CurrentWeather";
@@ -8,14 +8,14 @@ import Forecast from "../forecast/Forecast";
 import WeatherDetails from "../weatherDetails/WeatherDetails";
 import TodayForecast from "../todayForecast/TodayForecast";
 
-const {
-  setCoordinates,
-  getWeatherDetails,
-  getCityCoordinates,
-  getUserCoordinates,
-} = WeatherService();
-
 const App = () => {
+  const {
+    setCoordinates,
+    getWeatherDetails,
+    getCityCoordinates,
+    getUserCoordinates,
+  } = useWeatherService();
+
   const [lat, setLat] = useState(55.7504461);
   const [lon, setLon] = useState(37.6174943);
   const [country, setCountry] = useState("");

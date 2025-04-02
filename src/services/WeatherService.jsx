@@ -1,5 +1,8 @@
-/* import { useHttp } from "../hooks/http.hook"; */
-const WeatherService = () => {
+import { useHttp } from "../hooks/http.hook";
+
+const useWeatherService = () => {
+  const { loading, error, clearError, request } = useHttp();
+
   const _apiBase = "https://api.openweathermap.org/";
 
   const _apiKey = "d57e7dd67678ae3df53bfb464eebf81a";
@@ -46,7 +49,7 @@ const WeatherService = () => {
     };
   };
 
-  const getResource = async (url) => {
+  /*   const getResource = async (url) => {
     let res = await fetch(url);
 
     if (!res.ok) {
@@ -54,12 +57,12 @@ const WeatherService = () => {
     }
 
     return await res.json();
-  };
+  }; */
 
   //AirQuaility
 
   const getWeatherAirDetails = async () => {
-    const res = await getResource(
+    const res = await request(
       `${_apiBase}data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${_apiKey}`
     );
     return _transformAirDetails(res.list[0]);
@@ -82,7 +85,7 @@ const WeatherService = () => {
   //CurrentWeather
 
   const getWeatherDetails = async () => {
-    const res = await getResource(
+    const res = await request(
       `${_apiBase}data/2.5/weather?lat=${lat}&lon=${lon}&appid=${_apiKey}`
     );
 
@@ -157,7 +160,7 @@ const WeatherService = () => {
   //SunRise SunSet
 
   const getSunRiseSetDetails = async () => {
-    const res = await getResource(
+    const res = await request(
       `${_apiBase}data/2.5/weather?lat=${lat}&lon=${lon}&appid=${_apiKey}`
     );
     return _transformSunRiseSetDetails(res);
@@ -178,7 +181,7 @@ const WeatherService = () => {
   //DayForecast
 
   const getDayForecastDetails = async (param) => {
-    const res = await getResource(
+    const res = await request(
       `${_apiBase}data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${_apiKey}`
     );
     if (param) {
@@ -237,7 +240,7 @@ const WeatherService = () => {
   //CityCoordinates
 
   const getCityCoordinates = async (cityName) => {
-    const data = await getResource(
+    const data = await request(
       `${_apiBase}geo/1.0/direct?q=${cityName}&limit=1&appid=${_apiKey}`
     );
     return _transformGetCityCoordinates(data);
@@ -262,7 +265,7 @@ const WeatherService = () => {
             const { latitude, longitude } = position.coords;
             setCoordinates(latitude, longitude); // Обновляем координаты
 
-            const res = await getResource(
+            const res = await request(
               `${_apiBase}geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${_apiKey}`
             );
             resolve(_transformGetUserCoordinates(res));
@@ -290,7 +293,7 @@ const WeatherService = () => {
   const getCitySuggestions = async (query) => {
     if (!query.trim()) return [];
 
-    const data = await getResource(
+    const data = await request(
       `${_apiBase}geo/1.0/direct?q=${query}&limit=5&appid=${_apiKey}`
     );
 
@@ -303,9 +306,12 @@ const WeatherService = () => {
   };
 
   return {
+    loading,
+    error,
+    clearError,
     setCoordinates,
     getDate,
-    getResource,
+    request,
     getWeatherAirDetails,
     getWeatherDetails,
     getSunRiseSetDetails,
@@ -316,4 +322,4 @@ const WeatherService = () => {
   };
 };
 
-export default WeatherService;
+export default useWeatherService;

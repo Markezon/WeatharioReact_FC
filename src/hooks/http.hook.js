@@ -7,14 +7,16 @@ export const useHttp = () => {
   const request = useCallback(
     async (
       url,
-      method = "GET",
-      body = null,
-      headers = { "Content-Type": "application/json" }
+      options = {}
+
     ) => {
       setLoading(true);
 
       try {
-        const response = await fetch(url, { method, body, headers });
+        const response = await fetch(
+          url,
+          options
+        );
 
         if (!response.ok) {
           throw new Error(`Could not fetch ${url}, status: ${response.status}`);
@@ -37,3 +39,5 @@ export const useHttp = () => {
 
   return { loading, request, error, clearError };
 };
+
+

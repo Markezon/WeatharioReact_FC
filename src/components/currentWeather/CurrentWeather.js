@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 import Spinner from "../spinner/Spinner";
-import WeatherService from "../../services/WeatherService";
+import useWeatherService from "../../services/WeatherService";
 
 const CurrentWeather = ({ lat, lon, city, country, updateBackgroundImage }) => {
   const [data, setData] = useState({});
@@ -9,7 +9,7 @@ const CurrentWeather = ({ lat, lon, city, country, updateBackgroundImage }) => {
   const [error, setError] = useState(false);
   const [date, setDate] = useState({});
 
-  const { setCoordinates, getDate, getWeatherDetails } = WeatherService();
+  const { setCoordinates, getDate, getWeatherDetails } = useWeatherService();
 
   useEffect(() => {
     updateWeatherDetails();

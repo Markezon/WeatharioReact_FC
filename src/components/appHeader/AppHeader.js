@@ -1,12 +1,10 @@
 import { useState, useRef } from "react";
-import WeatherService from "../../services/WeatherService";
+import useWeatherService from "../../services/WeatherService";
 
 const AppHeader = ({ onSearch, updateUserCoordinates }) => {
   const cityInput = useRef(null);
   const [suggestions, setSuggestions] = useState([]);
-  const {
-    getCitySuggestions,
-  } = WeatherService();
+  const { getCitySuggestions } = useWeatherService();
 
   const handleCurrentLocation = () => {
     updateUserCoordinates();
