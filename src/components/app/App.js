@@ -24,6 +24,7 @@ const App = () => {
 
   useEffect(() => {
     updateUserCoordinates();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   ///автоматически будет обновлять фон при изменении координат

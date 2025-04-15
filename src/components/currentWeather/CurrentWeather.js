@@ -1,26 +1,14 @@
-import ErrorMessage from "../errorMessage/ErrorMessage";
-import Spinner from "../spinner/Spinner";
-import useWeatherService from "../../services/WeatherService";
 import useWeatherData from "../../hooks/useWeatherData";
+import setContent from "../../utils/setContent";
 
 const CurrentWeather = ({ lat, lon, city, country, updateBackgroundImage }) => {
-  const { data, date } = useWeatherData(lat, lon, (service) =>
+  const { data, date, process } = useWeatherData(lat, lon, (service) =>
     service.getWeatherDetails()
   );
 
-  const { loading, error } = useWeatherService();
-
-  const errorMessage = error ? <ErrorMessage /> : null;
-  const spinner = loading ? <Spinner /> : null;
-  const content = !(loading || error) ? (
-    <View data={data} date={date} city={city} country={country} />
-  ) : null;
-
   return (
     <div className="card">
-      {errorMessage}
-      {spinner}
-      {content}
+      {setContent(process, View, data, date, city, country)}
     </div>
   );
 };

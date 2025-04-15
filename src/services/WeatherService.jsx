@@ -1,8 +1,7 @@
-import { useState, useEffect } from "react";
 import { useHttp } from "../hooks/http.hook";
 
 const useWeatherService = () => {
-  const { loading, error, clearError, request } = useHttp();
+  const { clearError, request } = useHttp();
 
   const _apiBase = "https://api.openweathermap.org/";
 
@@ -49,16 +48,6 @@ const useWeatherService = () => {
       year: date.getFullYear(),
     };
   };
-
-  /*   const getResource = async (url) => {
-    let res = await fetch(url);
-
-    if (!res.ok) {
-      throw new Error(`Could not fetch ${url}`);
-    }
-
-    return await res.json();
-  }; */
 
   //AirQuaility
 
@@ -307,8 +296,6 @@ const useWeatherService = () => {
   };
 
   return {
-    loading,
-    error,
     clearError,
     setCoordinates,
     getDate,

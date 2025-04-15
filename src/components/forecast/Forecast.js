@@ -1,14 +1,10 @@
-import Spinner from "../spinner/Spinner";
-import ErrorMessage from "../errorMessage/ErrorMessage";
-import useWeatherService from "../../services/WeatherService";
 import useWeatherData from "../../hooks/useWeatherData";
+import setContent from "../../utils/setContent";
 
 const Forecast = ({ lat, lon }) => {
-  const { data } = useWeatherData(lat, lon, (service) =>
+  const { data, process } = useWeatherData(lat, lon, (service) =>
     service.getDayForecastDetails()
   );
-
-  const { loading, error } = useWeatherService();
 
   const renderItems = (arr) => {
     return arr.map((item, index) => {
@@ -27,16 +23,8 @@ const Forecast = ({ lat, lon }) => {
 
   const items = Array.isArray(data) ? renderItems(data) : null;
 
-  const errorMessage = error ? <ErrorMessage /> : null;
-  const spinner = loading ? <Spinner /> : null;
-  const content = !(loading || error) ? items : null;
-
   return (
-    <div className="hourly-forecast">
-      {errorMessage}
-      {spinner}
-      {content}
-    </div>
+    <div className="hourly-forecast">{setContent(process, () => items)}</div>
   );
 };
 
