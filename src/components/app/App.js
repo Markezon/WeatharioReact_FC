@@ -7,6 +7,7 @@ import SunriseSunset from "../sunriseSunset/SunriseSunset";
 import Forecast from "../forecast/Forecast";
 import WeatherDetails from "../weatherDetails/WeatherDetails";
 import TodayForecast from "../todayForecast/TodayForecast";
+import Spinner from "../spinner/Spinner";
 
 const App = () => {
   const {
@@ -21,9 +22,16 @@ const App = () => {
   const [country, setCountry] = useState("");
   const [city, setCity] = useState("");
   const [weatherBackImage, setWeatherBackImage] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 200);
+
     updateUserCoordinates();
+
+    return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -57,6 +65,10 @@ const App = () => {
       setCity((city) => res.name);
     });
   };
+
+  if (loading) {
+    return <Spinner />;
+  }
 
   return (
     <div
