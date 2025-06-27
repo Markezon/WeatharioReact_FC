@@ -368,6 +368,9 @@ hr {
   .weather-data .weather-right .highlights .air-indices {
     grid-template-columns: repeat(4, 1fr);
   }
+  .weather-data .weather-right .hourly-forecast {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 @media (max-width: 520px) {
