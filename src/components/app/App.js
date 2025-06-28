@@ -23,6 +23,7 @@ const App = () => {
   const [city, setCity] = useState("");
   const [weatherBackImage, setWeatherBackImage] = useState("");
   const [loading, setLoading] = useState(true);
+  const [searchError, setSearchError] = useState("");
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -58,12 +59,18 @@ const App = () => {
   };
 
   const onSearch = (cityName) => {
-    getCityCoordinates(cityName).then((res) => {
-      setLat((lat) => res.lat);
-      setLon((lon) => res.lon);
-      setCountry((country) => res.country);
-      setCity((city) => res.name);
-    });
+    setSearchError("");
+    getCityCoordinates(cityName)
+      .then((res) => {
+        setLat((lat) => res.lat);
+        setLon((lon) => res.lon);
+        setCountry((country) => res.country);
+        setCity((city) => res.name);
+      })
+      .catch((error) => {
+        console.error("City not found:", error);
+        setSearchError("not found");
+      });
   };
 
   if (loading) {
@@ -84,6 +91,8 @@ const App = () => {
         <AppHeader
           onSearch={onSearch}
           updateUserCoordinates={updateUserCoordinates}
+          searchError={searchError}
+          setSearchError={setSearchError}
         />
         <div className="weather-data">
           <div className="weather-left">

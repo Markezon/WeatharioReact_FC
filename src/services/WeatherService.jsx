@@ -233,6 +233,11 @@ const useWeatherService = () => {
     const data = await request(
       `${_apiBase}geo/1.0/direct?q=${cityName}&limit=1&appid=${_apiKey}`
     );
+
+    if (!data || data.length === 0) {
+      throw new Error("City not found");
+    }
+
     return _transformGetCityCoordinates(data);
   };
 

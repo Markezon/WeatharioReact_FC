@@ -56,7 +56,9 @@ hr {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
-  padding: 15px 0;
+  padding: 15px 5px;
+  border-radius: 5px;
+  gap: 5px;
   &_wrapper {
     display: flex;
     align-items: center;
@@ -96,8 +98,17 @@ hr {
 }
 
 .wheather-input {
+  position: relative;
   display: flex;
   gap: 5px;
+}
+
+.error-message {
+  position: absolute;
+  color: #ea6e4b;
+  font-size: 12px;
+  left: 70px;
+  top: 30px;
 }
 
 .suggestions {
@@ -302,6 +313,12 @@ hr {
   }
 }
 
+@media (max-width: 1510px) {
+  .weather-data .weather-right .hourly-forecast {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
 @media (max-width: 1040px) {
   .weather-data {
     grid-template-columns: repeat(2, 1fr);
@@ -347,11 +364,17 @@ hr {
       }
     }
   }
+  .error-message {
+    top: 40px;
+  }
 }
 
 @media (max-width: 660px) {
   .header {
+    padding-top: 0px;
+    padding-bottom: 0px;
     flex-direction: column;
+    gap: 5px;
     & h2 {
       margin-bottom: 8px;
     }
@@ -360,7 +383,17 @@ hr {
     #locationBtn {
       width: 100%;
       margin-bottom: 10px;
+      height: 50px;
+      padding: 2px;
+      border-radius: 15px;
+      /*       display: flex;
+      justify-content: center;
+      align-items: center; */
     }
+  }
+  .error-message {
+    left: 35px;
+    top: 35px;
   }
 }
 
@@ -370,6 +403,9 @@ hr {
   }
   .weather-data .weather-right .hourly-forecast {
     grid-template-columns: repeat(3, 1fr);
+  }
+  .main {
+    padding: 0 5px;
   }
 }
 
@@ -396,7 +432,7 @@ hr {
 
 @media (max-width: 450px) {
   .weather-data .weather-right .hourly-forecast {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 

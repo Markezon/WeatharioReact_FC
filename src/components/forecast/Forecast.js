@@ -2,8 +2,9 @@ import useWeatherData from "../../hooks/useWeatherData";
 import setContent from "../../utils/setContent";
 
 const Forecast = ({ lat, lon }) => {
+  let param = true;
   const { data, process } = useWeatherData(lat, lon, (service) =>
-    service.getDayForecastDetails()
+    service.getDayForecastDetails(param)
   );
 
   const renderItems = (arr) => {
