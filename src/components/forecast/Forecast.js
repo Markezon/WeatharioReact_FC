@@ -9,6 +9,7 @@ const Forecast = ({ lat, lon }) => {
 
   const renderItems = (arr) => {
     return arr.map((item, index) => {
+      console.log(item);
       return (
         <div className="card" key={`${index}`}>
           <p>{item.day}</p>

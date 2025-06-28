@@ -207,6 +207,7 @@ const useWeatherService = () => {
       }),
       temp: item.main.temp,
       icon: `https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`,
+      fullDate: new Date(item.dt_txt),
     }));
 
     const filteredData = Object.values(
@@ -224,7 +225,7 @@ const useWeatherService = () => {
       }, {})
     );
 
-    return filteredData;
+    return filteredData.sort((a, b) => a.fullDate - b.fullDate);
   };
 
   //CityCoordinates
